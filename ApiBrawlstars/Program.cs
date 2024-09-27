@@ -12,7 +12,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options=> {
+    options.AddPolicy("AllowCrosOrigin", policy =>
+    {
+        policy.AllowAnyOrigin()
+       .AllowAnyMethod()
+       .AllowAnyHeader();
+    });
+}  );
+
 var app = builder.Build();
+
+app.UseCors("AllowCrosssOrigin");
 
 using (var scope = app.Services.CreateScope())
 {
@@ -20,6 +31,7 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<DbBsContext>();
     context.Database.Migrate();
 }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
